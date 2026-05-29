@@ -1,0 +1,35 @@
+export default () => ({
+    application: {
+        name: process.env.APPLICATION_NAME,
+        env: process.env.APPLICATION_ENV,
+        debug: process.env.APPLICATION_DEBUG,
+        host: process.env.APPLICATION_HOST,
+        port: process.env.APPLICATION_PORT,
+        url: process.env.APPLICATION_URL
+    },
+    database: {
+        connect: process.env.DATABASE_CONNECTION,
+        host: process.env.DATABASE_HOST,
+        port: process.env.DATABASE_PORT,
+        name: process.env.DATABASE_NAME,
+        username: process.env.DATABASE_USERNAME,
+        password: process.env.DATABASE_PASSWORD,
+        ssl: process.env.SSL_PATH
+    },
+    jwt: {
+        access: process.env.ACCESS_SECRET,
+        refresh: process.env.REFRESH_SECRET,
+        secret: process.env.JWT_SECRET,
+        br: process.env.BCRYPT_ROUNDS
+    },
+    twilio: {
+        accountSid: process.env.ACCOUNT_SID,
+        authToken: process.env.AUTH_TOKEN,
+        phoneNumber: process.env.PHONE_NUMBER,
+        verifyServiceSid: process.env.VERIFY_SERVICE_SID
+    },
+    email: {
+        user: process.env.EMAIL_USER,
+        password: process.env.EMAIL_PASSWORD
+    }
+})
