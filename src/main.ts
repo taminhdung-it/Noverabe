@@ -21,7 +21,7 @@ async function bootstrap() {
     {
       ...document,
       servers: [
-        port === 10000 ?
+        port === "10000" ?
           {
             url: `https://api.novera.dpdns.org`,
             description: 'Production server',
