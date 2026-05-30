@@ -15,6 +15,8 @@ export class EmailService {
       host: 'smtp.office365.com',
       port: 587,
       secure: false,
+      logger: true,
+      debug: true,
       auth: {
         user: this.configService.get('email.user'),
         pass: this.configService.get('email.password'),
