@@ -55,6 +55,7 @@ export class TokenService {
             refresh_token: RefreshToken,
             full_name: Userres.full_name,
             avatar_url: Userres.avatar_url,
+            user_id: Userres.id
         };
     }
 

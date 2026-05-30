@@ -1,98 +1,158 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <img
+    src="https://res.cloudinary.com/dgfwcrbyg/image/upload/v1780138807/Novera_yrpmft.png"
+    width="120"
+    alt="Novera Logo"
+  />
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+<h1 align="center">Novera</h1>
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Mô tả
 
-## Description
+Một dự án máy chủ được xây dựng trên framework
+<a href="https://nodejs.org">Node.js</a>
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Cài đặt Dự án
 
-## Project setup
+**1.Clone dự án về**
+
+- Mở terminal vàc copy lệnh dưới đây:
 
 ```bash
-$ npm install
+$ git clone https://github.com/yourname/novera.git
 ```
 
-## Compile and run the project
+**2.Tạo file môi trường**
+
+- Tạo 1 file tên .env và copy đoạn code dưới đây:
+
+```env
+# ============================================================
+#                         Application
+# ============================================================
+
+APPLICATION_NAME=
+APPLICATION_ENV=
+APPLICATION_DEBUG=
+APPLICATION_HOST=
+APPLICATION_PORT=
+APPLICATION_URL=
+
+# ============================================================
+#                         Database
+# ============================================================
+
+DATABASE_CONNECTION=
+DATABASE_HOST=
+DATABASE_PORT=
+DATABASE_NAME=
+DATABASE_USERNAME=
+DATABASE_PASSWORD=
+SSL_PATH=
+
+#=============================================================
+#                           JWT
+#=============================================================
+
+ACCESS_SECRET=
+REFRESH_SECRET=
+JWT_SECRET=
+BCRYPT_ROUNDS=10
+
+#=============================================================
+#                         Twilio
+#=============================================================
+
+ACCOUNT_SID=
+AUTH_TOKEN=
+PHONE_NUMBER=
+VERIFY_SERVICE_SID=
+
+#=============================================================
+#                         Email
+#=============================================================
+
+EMAIL_USER=
+EMAIL_PASSWORD=
+
+#=============================================================
+#                       Cloudinary
+#=============================================================
+
+CLOUD_NAME=
+API_KEY=
+API_SECRET=
+```
+
+- Thêm các dữ liệu bạn hoặc người khác cung cấp.
+
+**3.Cài đặt thư viện**
+
+- Mở terminal vàc copy lệnh dưới đây:
 
 ```bash
-# development
-$ npm run start
+$ pnpm install
+```
 
-# watch mode
+**4.Chạy dự án**
+
+- Mở terminal vàc copy lệnh dưới đây:
+
+```bash
+# development mode
 $ npm run start:dev
 
 # production mode
 $ npm run start:prod
 ```
 
-## Run tests
+**6.Triển khai dự án**
 
-```bash
-# unit tests
-$ npm run test
+<p>Sau khi bạn đã hoàn thiện dự án mình rồi. Bạn có thể triển khai server của bạn lên các nền tảng đám mây.</p>
 
-# e2e tests
-$ npm run test:e2e
+- Bạn có thể tham khảo qua một nền tảng triển khai phổ biến như [Render](https://render.com/) cho phép bạn tải lên file môi trường và cài đặt tên miền bạn muốn.
+- Bạn cần một tên miền free có thể trao dồi kinh nghiệm có thể thông qua [DigitalPlat Domain](https://domain.digitalplat.org/) giúp bạn có tên miền như thật thời hạn lên tới 1 năm.
 
-# test coverage
-$ npm run test:cov
-```
+## Thông tin dự án
 
-## Deployment
+<p>Dự án web đọc truyện tranh cũng là đồ án tâm huyết, Dự án đang xây dựng đem tới một web đọc truyện lý tưởng cho những người hay đọc truyện trong những thời gian rảnh rỗi</p>
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+<p>Các công nghệ sử dụng:</p>
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+- Backend: [Nestjs](https://nestjs.com/) <img src="https://nestjs.com/img/logo-small.svg" alt="" width="23" align="center" style="background:white;border-radius:100px">
+- Frontend: [Nextjs](https://nestjs.com/) <img src="https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_light_background.png" alt="" width="25" align="center" style="background:white;border-radius:100px">
+- Database: [Avien](https://aiven.io/) <img src="https://avatars.githubusercontent.com/u/14290521?s=200&v=4" alt="" width="25" align="center" style="background:white;border-radius:100px">
+- Resource: [Cloudinary](https://cloudinary.com/) <img src="https://avatars.githubusercontent.com/u/1460763?s=200&v=4" alt="" width="20" align="center" style="background:white;border-radius:100px">
+- Deploy backend: [Render]() <img src="https://avatars.githubusercontent.com/u/36424661?s=200&v=4" alt="" width="20" align="center" style="background:white;border-radius:100px">
+- Deploy frontend: [Cloudflare]() <img src="https://avatars.githubusercontent.com/u/314135?s=200&v=4" alt="" width="20" align="center" style="background:white;border-radius:100px">
+- Domain: [DigitalPlat Domain](https://domain.digitalplat.org/) <img src="https://pbs.twimg.com/media/HJiSaFyWwAUAgXw.jpg" alt="" width="20" align="center" style="background:white;border-radius:100px">
+- Otp phone: [Twilio](https://www.twilio.com/en-us) <img src="https://avatars.githubusercontent.com/u/109142?s=280&v=4" alt="" width="20" align="center" style="background:white;border-radius:100px">
+- Source code: [Github](https://github.com/) <img src="https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg" alt="" width="20" align="center" style="background:white;border-radius:100px">
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+<p>Các công cụ khác bao gồm:</p>
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+- Thông tin dự án: Google sheet
+- Thảo luận: Microsoft teams
 
-## Resources
+<p>Dự án bao gồm các tính năng như:</p>
 
-Check out a few resources that may come in handy when working with NestJS:
+- Đăng nhập, đăng kí người dùng.
+- Tìm kiếm và lọc truyện tranh theo từ khoá, danh mục.
+- Tính năng thanh toán và giới hạn thời gian đọc bằng xu vàng.
+- Tính năng tải lên truyện tranh mình mong muốn.
+- Tương tác like, bình luận trên chương truyện đang đọc.
+- Quản lý có thể duyệt truyện tranh, tài khoản người dùng.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+<p>Các kĩ năng có trong dự án như:</p>
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- JWT làm mới liCloudflareên tục.
+- Phân chia service/controller/module.
+- Gửi email, otp điện thoại và xác nhận khi đăng nhập.
+- Tự gắn tự lấy Token bằng bảo mật Cookie HttpOnly. Sử dụng Token Version để khoá token
+- Lưu Cache.
+- Tải tài nguyên lên cloud.
+- Sử dụng Postgres qua host database.
+- Deploy lên host và gắn tên miền.
+- Viết và demo doc api cho frontend.
+- Tối ưu xử lý qua hàng chờ

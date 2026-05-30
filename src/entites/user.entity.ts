@@ -18,7 +18,7 @@ export class User {
   full_name!: string;
 
   @Column({ type: 'date', default: '1970-01-01' })
-  birth_date!: string;
+  birth_date!: Date;
 
   @Column({
     type: 'enum',

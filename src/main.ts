@@ -15,7 +15,7 @@ async function bootstrap() {
     credentials: true,
   });
   const configservice = app.get(ConfigService);
-  const port = process.env.APPLICATION_PORT || configservice.get<number>("application.port") || 3000;
+  const port = process.env.PORT || configservice.get<number>("application.port") || 3000;
   SwaggerModule.setup('api-docs',
     app,
     {

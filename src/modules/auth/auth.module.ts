@@ -10,6 +10,7 @@ import { EmailService } from './email.service';
 import { OtpService } from './otp.service';
 import { TokenService } from './token.service';
 import { CacheModule } from '@nestjs/cache-manager';
+import { UploadService } from './upload.service';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { CacheModule } from '@nestjs/cache-manager';
     AuthService,
     EmailService,
     OtpService,
-    TokenService
+    TokenService,
+    UploadService
   ],
 })
 export class AuthModule { }

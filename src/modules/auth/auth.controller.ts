@@ -43,12 +43,28 @@ export class AuthController {
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
     });
-    res.cookie('full_name', tokens.full_name)
-    res.cookie('avatar_url', tokens.avatar_url)
+    res.cookie('user_id', tokens.user_id, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
+    });
+    res.cookie('full_name', tokens.full_name, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
+    });
+    res.cookie('avatar_url', tokens.avatar_url, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
+    });
     res.json({
       message: 'Xác thực email thành công.',
       full_name: tokens.full_name,
-      avatar_url: tokens.avatar_url
+      avatar_url: tokens.avatar_url,
     });
   }
 }
