@@ -5,27 +5,29 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { VerifyEmailDto } from './dto/verify.dto';
 @Injectable()
 export class EmailService {
-    constructor(
-        private configService: ConfigService,
-        @Inject(CACHE_MANAGER)
-        private readonly cacheManager: any
-    ) { }
-    async sendemail(email: string) {
-        console.log('Sending email to:', email);
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: this.configService.get('email.user'),
-                pass: this.configService.get('email.password'),
-            },
-        });
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        await this.cacheManager.set(email, otp, { ttl: 300 }); // Lưu OTP vào cache với thời gian sống 5 phút
-        await transporter.sendMail({
-            from: this.configService.get('email.user'),
-            to: email,
-            subject: '[Noverabe] Verification Code',
-            html: `
+  constructor(
+    private configService: ConfigService,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: any
+  ) { }
+  async sendemail(email: string) {
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      service: 'gmail',
+      auth: {
+        user: this.configService.get('email.user'),
+        pass: this.configService.get('email.password'),
+      },
+    });
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    await this.cacheManager.set(email, otp, { ttl: 300 }); // Lưu OTP vào cache với thời gian sống 5 phút
+    await transporter.sendMail({
+      from: this.configService.get('email.user'),
+      to: email,
+      subject: '[Noverabe] Verification Code',
+      html: `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -84,18 +86,18 @@ export class EmailService {
 </body>
 </html>
         `,
-        });
-        return 'Email sent successfully';
-    }
+    });
+    return 'Email sent successfully';
+  }
 
-    async verifyemail(verifyEmailDto: VerifyEmailDto) {
-        const otp = await this.cacheManager.get(verifyEmailDto.email);
-        if (otp === verifyEmailDto.otp) {
-            await this.cacheManager.del(verifyEmailDto.email);
-            return true;
-        } else {
-            return false;
-        }
+  async verifyemail(verifyEmailDto: VerifyEmailDto) {
+    const otp = await this.cacheManager.get(verifyEmailDto.email);
+    if (otp === verifyEmailDto.otp) {
+      await this.cacheManager.del(verifyEmailDto.email);
+      return true;
+    } else {
+      return false;
     }
+  }
 
 }

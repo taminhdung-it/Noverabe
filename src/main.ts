@@ -8,6 +8,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       "http://localhost:3000",
+      "https://novera.dpdns.org",
       "https://api.novera.dpdns.org",
       "https://localhost:9999"
     ],
@@ -40,7 +41,7 @@ async function bootstrap() {
 
   await app.listen(port);
   const url = await app.getUrl()
-  if (url.split(":")[2].split("/")[0] === "10000") {
+  if (port === "10000") {
     console.log(`Novera Sever dang chay tai cổng ${url.split(":")[2].split("/")[0]} voi duong link https://api.novera.dpdns.org/api-docs/`)
   } else {
     console.log(`Novera Sever đang chạy tại cổng ${url.replace("[::1]", configservice.get<string>("application.host")!).split(":")[2].split("/")[0]} với đường link ${url.replace("[::1]", configservice.get<string>("application.host")!)}/api-docs/`)
