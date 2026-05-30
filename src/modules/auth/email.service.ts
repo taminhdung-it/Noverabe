@@ -15,6 +15,7 @@ export class EmailService {
       host: 'smtp.gmail.com',
       port: 587,
       secure: false,
+      family: 4,
       service: 'gmail',
       auth: {
         user: this.configService.get('email.user'),
