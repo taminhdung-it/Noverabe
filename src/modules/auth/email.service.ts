@@ -12,10 +12,9 @@ export class EmailService {
   ) { }
   async sendemail(email: string) {
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: 'smtp.office365.com',
       port: 587,
       secure: false,
-      family: 4,
       service: 'gmail',
       auth: {
         user: this.configService.get('email.user'),
