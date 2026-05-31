@@ -28,13 +28,13 @@ export default () => ({
         phoneNumber: process.env.PHONE_NUMBER,
         verifyServiceSid: process.env.VERIFY_SERVICE_SID
     },
-    email: {
-        user: process.env.EMAIL_USER,
-        password: process.env.EMAIL_PASSWORD
-    },
     cloudinary: {
         cloudName: process.env.CLOUD_NAME,
         apiKey: process.env.API_KEY,
         apiSecret: process.env.API_SECRET
+    },
+    resend: {
+        apiKey: process.env.RESEND_API_KEY,
+        fromEmail: process.env.RESEND_FROM_EMAIL
     }
 })

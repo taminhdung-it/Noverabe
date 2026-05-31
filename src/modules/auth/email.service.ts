@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import nodemailer from 'nodemailer';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { VerifyEmailDto } from './dto/verify.dto';
+import { Resend } from 'resend'
 @Injectable()
 export class EmailService {
   constructor(
@@ -11,21 +12,11 @@ export class EmailService {
     private readonly cacheManager: any
   ) { }
   async sendemail(email: string) {
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.office365.com',
-      port: 587,
-      secure: false,
-      logger: true,
-      debug: true,
-      auth: {
-        user: this.configService.get('email.user'),
-        pass: this.configService.get('email.password'),
-      },
-    });
+    const resend = new Resend(this.configService.get('resend.apiKey'))
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     await this.cacheManager.set(email, otp, { ttl: 300 }); // Lưu OTP vào cache với thời gian sống 5 phút
-    await transporter.sendMail({
-      from: this.configService.get('email.user'),
+    const result = await resend.emails.send({
+      from: this.configService.get('resend.fromEmail')!,
       to: email,
       subject: '[Noverabe] Verification Code',
       html: `
