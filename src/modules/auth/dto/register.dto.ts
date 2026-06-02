@@ -1,4 +1,4 @@
-import { IS_ALPHA, IsNotEmpty, Matches } from "class-validator";
+import { IsEmail, IsNotEmpty, Matches } from "class-validator";
 
 export class RegisterDto {
     @IsNotEmpty()
@@ -9,7 +9,7 @@ export class RegisterDto {
     password!: string;
 
     @IsNotEmpty()
-    @Matches(/^[A-Za-z][A-Za-z0-9._-]+@[A-Za-z]+\.(com)$/, { message: 'Email không hợp lệ.' })
+    @IsEmail({}, { message: 'Email không hợp lệ.' })
     email!: string;
 
     @IsNotEmpty()
@@ -17,17 +17,14 @@ export class RegisterDto {
     PhoneNumber!: string;
 
     @IsNotEmpty()
-    RoleId!: number;
-
-    @IsNotEmpty()
+    @Matches(/^[A-Za-zÀ-ỹ]{2,}( [A-Za-zÀ-ỹ]{2,}){2,}$/, { message: 'Họ tên phải có ít nhất 3 từ, mỗi từ có ít nhất 2 ký tự.' })
     FullName!: string;
 
     @IsNotEmpty()
-    Birthday!: Date;
+    @Matches(/^(197[0-9]|[2-9][0-9]{3})\-(0[1-9]|1[0-2])\-(0[1-9]|[12][0-9]|3[01])$/, { message: 'Ngày sinh phải có định dạng dd-MM-yyyy.' })
+    Birthday!: string;
 
     @IsNotEmpty()
+    @Matches(/^(Nam|Nữ)$/, { message: 'Giới tính phải là Nam hoặc Nữ.' })
     Gender!: string;
-
-    @IsNotEmpty()
-    avatar!: any;
 }

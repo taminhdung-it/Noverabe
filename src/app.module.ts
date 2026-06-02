@@ -8,6 +8,7 @@ import fs from 'fs';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './modules/auth/auth.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { MailerModule } from '@nestjs-modules/mailer';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -32,7 +33,16 @@ import { CacheModule } from '@nestjs/cache-manager';
     }),
     JwtModule.register({}),
     CacheModule.register({}),
-    AuthModule
+    AuthModule,
+    MailerModule.forRoot({
+      transport: {
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

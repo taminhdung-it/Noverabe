@@ -16,11 +16,11 @@ export const authDoc = {
                                 properties: {
                                     username: {
                                         type: 'string',
-                                        example: 'taminhdung'
+                                        example: 'admin'
                                     },
                                     password: {
                                         type: 'string',
-                                        example: 'Monkoja12032001'
+                                        example: 'admin'
                                     }
                                 },
                                 required: ['username', 'password']
@@ -32,11 +32,11 @@ export const authDoc = {
                                 properties: {
                                     username: {
                                         type: 'string',
-                                        example: 'taminhdung'
+                                        example: 'admin'
                                     },
                                     password: {
                                         type: 'string',
-                                        example: 'Monkoja12032001'
+                                        example: 'admin'
                                     }
                                 },
                                 required: ['username', 'password']
@@ -54,11 +54,81 @@ export const authDoc = {
                                     properties: {
                                         message: {
                                             type: 'string',
-                                            example: 'Đăng nhập thành công. Vui lòng kiểm tra email để nhận mã OTP.'
+                                            example: 'Đăng nhập thành công. Vui lòng xác thực danh tính.'
                                         },
                                         account_id: {
                                             type: 'string',
                                             example: 'f176f500-f5c1-40d5-90a9-143940585d06'
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    500: {
+                        description: 'Thất bại.',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        message: {
+                                            type: 'string',
+                                            example: ''
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        '/auth/send-email': {
+            post: {
+                tags: ['Tài khoản'],
+                summary: 'Gửi mã OTP đến email',
+                description: '',
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    account_id: {
+                                        type: 'string',
+                                        example: '7873014e-95b0-4669-86d7-b6d62c8c835a'
+                                    }
+                                },
+                                required: ['account_id']
+                            }
+                        },
+                        'application/x-www-form-urlencoded': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    account_id: {
+                                        type: 'string',
+                                        example: '7873014e-95b0-4669-86d7-b6d62c8c835a'
+                                    }
+                                },
+                                required: ['account_id']
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    200: {
+                        description: 'Thành công.',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        message: {
+                                            type: 'string',
+                                            example: 'Mã OTP đã được gửi đến email của bạn. Vui lòng kiểm tra và xác thực.'
                                         },
                                     },
                                 },
@@ -98,18 +168,30 @@ export const authDoc = {
                                 properties: {
                                     account_id: {
                                         type: 'string',
-                                        example: 'f176f500-f5c1-40d5-90a9-143940585d06'
+                                        example: '7873014e-95b0-4669-86d7-b6d62c8c835a'
                                     },
-                                    email: {
-                                        type: 'string',
-                                        example: 'taminhdung.it@gmail.com'
-                                    },
-                                    otp_code: {
+                                    otp: {
                                         type: 'string',
                                         example: '123456'
                                     }
                                 },
-                                required: ['account_id', 'email', 'otp_code']
+                                required: ['account_id', 'otp']
+                            }
+                        },
+                        'application/x-www-form-urlencoded': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    account_id: {
+                                        type: 'string',
+                                        example: '7873014e-95b0-4669-86d7-b6d62c8c835a'
+                                    },
+                                    otp: {
+                                        type: 'string',
+                                        example: '123456'
+                                    }
+                                },
+                                required: ['account_id', 'otp']
                             }
                         }
                     }
@@ -126,10 +208,14 @@ export const authDoc = {
                                             type: 'string',
                                             example: 'Xác thực thành công.'
                                         },
-                                        access_token: {
+                                        full_name: {
                                             type: 'string',
-                                            example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijg5ODQ0YjA4LTk1YjAtNDI3ZC1iODQyLTU2YjE4ZDEwM2E0MiIsImlhdCI6MTY5ODQ4MDg3OSwiZXhwIjoxNjk4NDgzNDc5fQ.7nXo8sHqLhXqz8lK7a9mN8vVb9vV8vVb9vV8vV8'
+                                            example: 'Nguyễn Văn A'
                                         },
+                                        avatar_url: {
+                                            type: 'string',
+                                            example: 'https://example.com/avatar.jpg'
+                                        }
                                     },
                                 },
                             },

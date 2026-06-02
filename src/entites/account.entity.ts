@@ -60,6 +60,12 @@ export class Account {
   @Column({ type: 'bigint', default: 0 })
   token_version!: string;
 
+  @Column({ default: false })
+  two_factor_enabled!: boolean;
+
+  @Column({ nullable: true })
+  two_factor_secret!: string;
+
   @CreateDateColumn({ type: 'timestamp' })
   created_at!: Date;
 

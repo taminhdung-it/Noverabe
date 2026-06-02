@@ -1,5 +1,5 @@
 import { Account } from './../../entites/account.entity';
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LoginDto } from './dto/login.dto';
@@ -13,11 +13,15 @@ import { EmailService } from './email.service';
 import { OtpService } from './otp.service';
 import { RegisterDto } from './dto/register.dto';
 import { UploadService } from './upload.service';
+import type { } from 'multer';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 
 @Injectable()
 export class AuthService {
     constructor(
+        @Inject(CACHE_MANAGER)
+        private readonly cacheManager: any,
         private readonly configService: ConfigService,
         private readonly jwtService: JwtService,
         @InjectRepository(Account)
@@ -32,46 +36,42 @@ export class AuthService {
         private readonly uploadService: UploadService
     ) { }
 
-    async register(reigsterDto: RegisterDto) {
+    async register(registerDto: RegisterDto, avatar: Express.Multer.File) {
         const userResult = await this.userRepo.save({
-            full_name: reigsterDto.FullName,
-            birth_date: reigsterDto.Birthday,
-            gender: reigsterDto.Gender.toLowerCase() === 'nam' ? GenderEnum.MALE : GenderEnum.FEMALE,
+            full_name: registerDto.FullName,
+            birth_date: registerDto.Birthday,
+            gender: registerDto.Gender.toLowerCase() === 'nam' ? GenderEnum.MALE : GenderEnum.FEMALE,
         });
-        const passwordHash = await bcrypt.hash(reigsterDto.password, 10);
-        const roleResult = await this.roleRepo.findOneBy({ id: reigsterDto.RoleId.toString() });
-        if (!roleResult) {
-            throw new NotFoundException('Vai trò không tồn tại. Vui lòng kiểm tra lại.');
-        }
+        const passwordHash = await bcrypt.hash(registerDto.password, 10);
         const accountResult = await this.accountRepo.save({
-            username: reigsterDto.username,
+            username: registerDto.username,
             password_hash: passwordHash,
-            email: reigsterDto.email,
-            phone_number: reigsterDto.PhoneNumber,
-            role_id: roleResult.id,
+            email: registerDto.email,
+            phone_number: registerDto.PhoneNumber,
+            role_id: "1",
             user_id: userResult.id,
         });
-        const uploadResult = await this.uploadService.uploadFile(reigsterDto.avatar, reigsterDto.FullName, accountResult.uid, userResult.id);
+        const uploadResult = await this.uploadService.uploadFile(avatar, registerDto.FullName, accountResult.uid, userResult.id);
         await this.userRepo.update({ id: userResult.id }, { avatar_url: uploadResult });
     }
 
     async login(loginDto: LoginDto) {
-        const Accountres = await this.accountRepo.findOneBy({ username: loginDto.username });
-        if (!Accountres) {
+        const AccountResult = await this.accountRepo.findOneBy({ username: loginDto.username });
+        if (!AccountResult) {
             throw new NotFoundException('Tên người dùng không tồn tại. Vui lòng kiểm tra lại.');
         }
-        const isPasswordValid = await bcrypt.compare(loginDto.password, Accountres.password_hash);
+        const isPasswordValid = await bcrypt.compare(loginDto.password, AccountResult.password_hash);
         if (!isPasswordValid) {
             throw new UnauthorizedException('Mật khẩu không đúng. Vui lòng thử lại.');
         }
         // Kiểm tra trạng thái tài khoản
-        if (Accountres.status === AccountStatusEnum.ONLINE.toString()) {
+        if (AccountResult.status === AccountStatusEnum.ONLINE.toString()) {
             throw new UnauthorizedException('Tài khoản đang hoạt động.');
-        } else if (Accountres.status === AccountStatusEnum.LOCKED.toString()) {
+        } else if (AccountResult.status === AccountStatusEnum.LOCKED.toString()) {
             throw new UnauthorizedException('Tài khoản đã bị khóa.');
         }
-        await this.emailService.sendemail(Accountres.email);
-        return { account_id: Accountres.uid };
+        await this.cacheManager.set("accountid", AccountResult.uid, { ttl: 900 });
+        return { account_id: AccountResult.uid };
     }
 
 }

@@ -36,5 +36,9 @@ export default () => ({
     resend: {
         apiKey: process.env.RESEND_API_KEY,
         fromEmail: process.env.RESEND_FROM_EMAIL
+    },
+    email: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 })
