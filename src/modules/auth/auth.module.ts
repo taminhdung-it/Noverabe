@@ -6,11 +6,10 @@ import { Account } from '../../entites/account.entity';
 import { Role, User } from '../../entites';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { EmailService } from './email.service';
-import { OtpService } from './otp.service';
 import { TokenService } from './token.service';
 import { CacheModule } from '@nestjs/cache-manager';
 import { UploadService } from './upload.service';
+import { AuthenticationService } from './authentication.service';
 
 @Module({
   imports: [
@@ -22,10 +21,9 @@ import { UploadService } from './upload.service';
   controllers: [AuthController],
   providers: [
     AuthService,
-    EmailService,
-    OtpService,
     TokenService,
-    UploadService
+    UploadService,
+    AuthenticationService
   ],
 })
 export class AuthModule { }

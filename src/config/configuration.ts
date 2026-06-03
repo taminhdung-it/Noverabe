@@ -22,23 +22,9 @@ export default () => ({
         secret: process.env.JWT_SECRET,
         br: process.env.BCRYPT_ROUNDS
     },
-    twilio: {
-        accountSid: process.env.ACCOUNT_SID,
-        authToken: process.env.AUTH_TOKEN,
-        phoneNumber: process.env.PHONE_NUMBER,
-        verifyServiceSid: process.env.VERIFY_SERVICE_SID
-    },
     cloudinary: {
         cloudName: process.env.CLOUD_NAME,
         apiKey: process.env.API_KEY,
         apiSecret: process.env.API_SECRET
     },
-    resend: {
-        apiKey: process.env.RESEND_API_KEY,
-        fromEmail: process.env.RESEND_FROM_EMAIL
-    },
-    email: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
 })

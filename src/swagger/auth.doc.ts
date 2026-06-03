@@ -84,10 +84,10 @@ export const authDoc = {
                 },
             },
         },
-        '/auth/send-email': {
+        '/auth/verify-2fa': {
             post: {
                 tags: ['Tài khoản'],
-                summary: 'Gửi mã OTP đến email',
+                summary: 'Xác thực hai yếu tố',
                 description: '',
                 requestBody: {
                     required: true,
@@ -98,10 +98,14 @@ export const authDoc = {
                                 properties: {
                                     account_id: {
                                         type: 'string',
-                                        example: '7873014e-95b0-4669-86d7-b6d62c8c835a'
+                                        example: 'f176f500-f5c1-40d5-90a9-143940585d06'
+                                    },
+                                    otp: {
+                                        type: 'string',
+                                        example: '123456'
                                     }
                                 },
-                                required: ['account_id']
+                                required: ['account_id', 'otp']
                             }
                         },
                         'application/x-www-form-urlencoded': {
@@ -110,10 +114,14 @@ export const authDoc = {
                                 properties: {
                                     account_id: {
                                         type: 'string',
-                                        example: '7873014e-95b0-4669-86d7-b6d62c8c835a'
+                                        example: 'f176f500-f5c1-40d5-90a9-143940585d06'
+                                    },
+                                    otp: {
+                                        type: 'string',
+                                        example: '123456'
                                     }
                                 },
-                                required: ['account_id']
+                                required: ['account_id', 'otp']
                             }
                         }
                     }
@@ -128,7 +136,7 @@ export const authDoc = {
                                     properties: {
                                         message: {
                                             type: 'string',
-                                            example: 'Mã OTP đã được gửi đến email của bạn. Vui lòng kiểm tra và xác thực.'
+                                            example: 'Xác thực hai yếu tố thành công.'
                                         },
                                     },
                                 },
@@ -154,10 +162,10 @@ export const authDoc = {
                 },
             },
         },
-        '/auth/verify-email': {
+        '/auth/set-tokens': {
             post: {
                 tags: ['Tài khoản'],
-                summary: 'Xác thực email',
+                summary: 'Xác thực danh tính',
                 description: '',
                 requestBody: {
                     required: true,
@@ -168,14 +176,10 @@ export const authDoc = {
                                 properties: {
                                     account_id: {
                                         type: 'string',
-                                        example: '7873014e-95b0-4669-86d7-b6d62c8c835a'
+                                        example: 'f176f500-f5c1-40d5-90a9-143940585d06'
                                     },
-                                    otp: {
-                                        type: 'string',
-                                        example: '123456'
-                                    }
                                 },
-                                required: ['account_id', 'otp']
+                                required: ['account_id']
                             }
                         },
                         'application/x-www-form-urlencoded': {
@@ -184,14 +188,10 @@ export const authDoc = {
                                 properties: {
                                     account_id: {
                                         type: 'string',
-                                        example: '7873014e-95b0-4669-86d7-b6d62c8c835a'
+                                        example: 'f176f500-f5c1-40d5-90a9-143940585d06'
                                     },
-                                    otp: {
-                                        type: 'string',
-                                        example: '123456'
-                                    }
                                 },
-                                required: ['account_id', 'otp']
+                                required: ['account_id']
                             }
                         }
                     }
@@ -204,10 +204,6 @@ export const authDoc = {
                                 schema: {
                                     type: 'object',
                                     properties: {
-                                        message: {
-                                            type: 'string',
-                                            example: 'Xác thực thành công.'
-                                        },
                                         full_name: {
                                             type: 'string',
                                             example: 'Nguyễn Văn A'
@@ -215,7 +211,7 @@ export const authDoc = {
                                         avatar_url: {
                                             type: 'string',
                                             example: 'https://example.com/avatar.jpg'
-                                        }
+                                        },
                                     },
                                 },
                             },
@@ -239,6 +235,6 @@ export const authDoc = {
                     },
                 },
             },
-        },
-    },
-};
+        }
+    }
+}

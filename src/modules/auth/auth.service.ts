@@ -9,8 +9,6 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '../../entites/user.entity';
 import { AccountStatusEnum, GenderEnum, Role } from '../../entites';
 import { TokenService } from './token.service';
-import { EmailService } from './email.service';
-import { OtpService } from './otp.service';
 import { RegisterDto } from './dto/register.dto';
 import { UploadService } from './upload.service';
 import type { } from 'multer';
@@ -31,8 +29,6 @@ export class AuthService {
         @InjectRepository(User)
         private readonly userRepo: Repository<User>,
         private readonly tokenService: TokenService,
-        private readonly emailService: EmailService,
-        private readonly otpService: OtpService,
         private readonly uploadService: UploadService
     ) { }
 
@@ -56,12 +52,13 @@ export class AuthService {
     }
 
     async login(loginDto: LoginDto) {
+        // Kiểm tra tên tài khoản và mật khẩu
         const AccountResult = await this.accountRepo.findOneBy({ username: loginDto.username });
-        if (!AccountResult) {
+        if (AccountResult === null) {
             throw new NotFoundException('Tên người dùng không tồn tại. Vui lòng kiểm tra lại.');
         }
         const isPasswordValid = await bcrypt.compare(loginDto.password, AccountResult.password_hash);
-        if (!isPasswordValid) {
+        if (isPasswordValid === null) {
             throw new UnauthorizedException('Mật khẩu không đúng. Vui lòng thử lại.');
         }
         // Kiểm tra trạng thái tài khoản
@@ -70,8 +67,13 @@ export class AuthService {
         } else if (AccountResult.status === AccountStatusEnum.LOCKED.toString()) {
             throw new UnauthorizedException('Tài khoản đã bị khóa.');
         }
-        await this.cacheManager.set("accountid", AccountResult.uid, { ttl: 900 });
-        return { account_id: AccountResult.uid };
+        // Nếu tài khoản có bật 2FA, lưu trạng thái xác thực 2FA vào cache
+        if (AccountResult.two_factor_enabled === true) {
+            await this.cacheManager.set(`${AccountResult.uid}_auth`, false, { ttl: 900 });
+        }
+        await this.cacheManager.set(AccountResult.uid, AccountResult.uid, { ttl: 900 });
+        console.log(await this.cacheManager.get(AccountResult.uid), await this.cacheManager.get(`${AccountResult.uid}_auth`));
+        return { account_id: AccountResult.uid, verify_2fa: AccountResult.two_factor_enabled };
     }
 
 }
