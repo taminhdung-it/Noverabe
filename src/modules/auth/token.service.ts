@@ -17,24 +17,10 @@ export class TokenService {
         @InjectRepository(User)
         private readonly userRepo: Repository<User>
     ) { }
-    async generateToken(accountId: string) {
-        // Kiểm tra trạng thái đăng nhập và xác thực 2FA trong cache
-        const accountcache = await this.cacheManager.get(accountId);
-        const accountcacheauth = await this.cacheManager.get(`${accountId}_auth`);
-        console.log(accountId, accountcache, accountcacheauth);
-        if (accountcache === null || accountcache === undefined) {
-            throw new UnauthorizedException('Bạn chưa đăng nhập. Vui lòng đăng nhập để tiếp tục.');
-        }
-        if (accountcache !== accountId) {
-            throw new UnauthorizedException('accountId không hợp lệ. Vui lòng đăng nhập để tiếp tục.');
-        }
-        const AccountResult = await this.accountRepo.findOneBy({ uid: accountId });
-        if (AccountResult?.two_factor_enabled === true) {
-            if (accountcacheauth === false) {
-                throw new UnauthorizedException('Bạn chưa xác thực hai yếu tố. Vui lòng xác thực để tiếp tục.');
-            }
-        }
+
+    async createToken(accountId: string): Promise<{ access_token: string, refresh_token: string, full_name: string, avatar_url: string, user_id: string }> {
         // Lấy thông tin tài khoản từ cơ sở dữ liệu
+        const AccountResult = await this.accountRepo.findOneBy({ uid: accountId });
         if (AccountResult === null) {
             throw new NotFoundException('Tài khoản không tồn tại.');
         }
@@ -67,17 +53,34 @@ export class TokenService {
                 expiresIn: '7d'
             }
         );
-        if (!AccessToken && !RefreshToken) {
-            throw new NotFoundException('Không tìm thấy token.');
+        return { access_token: AccessToken, refresh_token: RefreshToken, full_name: UserResult.full_name, avatar_url: UserResult.avatar_url, user_id: UserResult.id };
+    }
+
+    async generateToken(accountId: string) {
+        // Kiểm tra trạng thái đăng nhập và xác thực 2FA trong cache
+        const accountcache = await this.cacheManager.get(accountId);
+        const accountcacheauth = await this.cacheManager.get(`${accountId}_auth`);
+        if (accountcache === null || accountcache === undefined) {
+            throw new NotFoundException('Bạn chưa đăng nhập. Vui lòng đăng nhập để tiếp tục.');
         }
+        if (accountcache !== accountId) {
+            throw new UnauthorizedException('accountId không hợp lệ. Vui lòng đăng nhập để tiếp tục.');
+        }
+        const AccountResult = await this.accountRepo.findOneBy({ uid: accountId });
+        if (AccountResult?.two_factor_enabled === true) {
+            if (accountcacheauth === false) {
+                throw new UnauthorizedException('Bạn chưa xác thực hai yếu tố. Vui lòng xác thực để tiếp tục.');
+            }
+        }
+        const data = await this.createToken(accountId);
         // Cập nhật trạng thái tài khoản thành ONLINE b
         await this.accountRepo.update({ uid: accountId }, { status: AccountStatusEnum.ONLINE });
         return {
-            access_token: AccessToken,
-            refresh_token: RefreshToken,
-            full_name: UserResult.full_name,
-            avatar_url: UserResult.avatar_url,
-            user_id: UserResult.id
+            access_token: data.access_token,
+            refresh_token: data.refresh_token,
+            full_name: data.full_name,
+            avatar_url: data.avatar_url,
+            user_id: data!.user_id
         };
     }
 

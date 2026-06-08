@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { v2 as cloudinary } from 'cloudinary';
-import type {} from 'multer';
+import type { } from 'multer';
 @Injectable()
 export class UploadService {
     constructor(
@@ -13,11 +13,24 @@ export class UploadService {
             api_key: this.configService.get<string>("cloudinary.apiKey"),
             api_secret: this.configService.get<string>("cloudinary.apiSecret")
         });
-        const result = await cloudinary.uploader.upload(file.path, {
-            folder: "Avatars",
-            public_id: `${fullname.replace(" ", "_")}_${userid}_${account_id}`,
-            overwrite: true
-        });
-        return result.secure_url;
+        return new Promise<string>((resolve, reject) => {
+
+            const stream = cloudinary.uploader.upload_stream(
+                {
+                    folder: 'Avatars',
+                    public_id: `${fullname.replace(/ /g, '_')}_${userid}_${account_id}`,
+                    overwrite: true,
+                },
+                (error, result) => {
+
+                    if (error) {
+                        return reject(error);
+                    }
+                    resolve(result!.secure_url);
+                },
+            );
+
+            stream.end(file.buffer);
+        })
     }
 }

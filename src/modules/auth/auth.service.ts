@@ -32,12 +32,14 @@ export class AuthService {
         private readonly uploadService: UploadService
     ) { }
 
-    async register(registerDto: RegisterDto, avatar: Express.Multer.File) {
+    async register(registerDto: RegisterDto, file: Express.Multer.File) {
+        // Tạo thông tin người dùng mới
         const userResult = await this.userRepo.save({
             full_name: registerDto.FullName,
             birth_date: registerDto.Birthday,
             gender: registerDto.Gender.toLowerCase() === 'nam' ? GenderEnum.MALE : GenderEnum.FEMALE,
         });
+        // Mã hóa mật khẩu và lưu thông tin tài khoản
         const passwordHash = await bcrypt.hash(registerDto.password, 10);
         const accountResult = await this.accountRepo.save({
             username: registerDto.username,
@@ -47,7 +49,8 @@ export class AuthService {
             role_id: "1",
             user_id: userResult.id,
         });
-        const uploadResult = await this.uploadService.uploadFile(avatar, registerDto.FullName, accountResult.uid, userResult.id);
+        // Tải ảnh đại diện lên Cloudinary và cập nhật URL vào thông tin người dùng
+        const uploadResult = await this.uploadService.uploadFile(file, registerDto.FullName, accountResult.uid, userResult.id);
         await this.userRepo.update({ id: userResult.id }, { avatar_url: uploadResult });
     }
 
@@ -58,7 +61,7 @@ export class AuthService {
             throw new NotFoundException('Tên người dùng không tồn tại. Vui lòng kiểm tra lại.');
         }
         const isPasswordValid = await bcrypt.compare(loginDto.password, AccountResult.password_hash);
-        if (isPasswordValid === null) {
+        if (isPasswordValid === false) {
             throw new UnauthorizedException('Mật khẩu không đúng. Vui lòng thử lại.');
         }
         // Kiểm tra trạng thái tài khoản
@@ -72,7 +75,6 @@ export class AuthService {
             await this.cacheManager.set(`${AccountResult.uid}_auth`, false, { ttl: 900 });
         }
         await this.cacheManager.set(AccountResult.uid, AccountResult.uid, { ttl: 900 });
-        console.log(await this.cacheManager.get(AccountResult.uid), await this.cacheManager.get(`${AccountResult.uid}_auth`));
         return { account_id: AccountResult.uid, verify_2fa: AccountResult.two_factor_enabled };
     }
 

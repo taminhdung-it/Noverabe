@@ -1,9 +1,12 @@
-import { Body, Controller, HttpCode, Post, Res, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Body, Controller, HttpCode, NotFoundException, Post, Res, UnauthorizedException, UploadedFile } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { TokenService } from './token.service';
 import express from 'express';
 import { AuthenticationService } from './authentication.service';
+import { RegisterDto } from './dto/register.dto';
+import { UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -11,6 +14,19 @@ export class AuthController {
     private readonly tokenService: TokenService,
     private readonly authenticationService: AuthenticationService
   ) { }
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('register')
+  @HttpCode(201)
+  async register(@Body() registerDto: RegisterDto, @UploadedFile() file: Express.Multer.File, @Res() res: express.Response) {
+    if (file === undefined || file === null) {
+      throw new NotFoundException('Không tìm thấy tệp.');
+    }
+    if (!file.mimetype.startsWith('image/')) {
+      throw new BadRequestException('Tệp tải lên phải là ảnh.');
+    }
+    await this.authService.register(registerDto, file);
+    res.json({ message: 'Đăng ký thành công.' });
+  }
 
   @Post('login')
   @HttpCode(200)
@@ -40,7 +56,7 @@ export class AuthController {
   }
 
   @Post('set-tokens')
-  @HttpCode(200)
+  @HttpCode(201)
   async setTokens(@Body() body: { account_id: string }, @Res() res: express.Response) {
     const tokens = await this.tokenService.generateToken(body.account_id);
     res.cookie('access_token', tokens.access_token, {
@@ -56,18 +72,6 @@ export class AuthController {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
     });
     res.cookie('user_id', tokens.user_id, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
-    });
-    res.cookie('full_name', tokens.full_name, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
-    });
-    res.cookie('avatar_url', tokens.avatar_url, {
       httpOnly: true,
       secure: true,
       sameSite: 'lax',

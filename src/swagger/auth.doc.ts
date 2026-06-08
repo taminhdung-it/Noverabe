@@ -1,7 +1,91 @@
-import { Body } from "@nestjs/common";
-
 export const authDoc = {
     paths: {
+        '/auth/register': {
+            post: {
+                tags: ['Tài khoản'],
+                summary: "Đăng kí",
+                description: '',
+                requestBody: {
+                    required: true,
+                    content: {
+                        'multipart/form-data': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    file: {
+                                        type: 'string',
+                                        format: 'binary'
+                                    },
+                                    username: {
+                                        type: 'string',
+                                        example: "novera"
+                                    },
+                                    password: {
+                                        type: 'string',
+                                        example: "Novera123*"
+                                    },
+                                    email: {
+                                        type: 'string',
+                                        example: "buingoclinh.dev@gmail.com"
+                                    },
+                                    PhoneNumber: {
+                                        type: 'string',
+                                        example: "0794556192"
+                                    },
+                                    FullName: {
+                                        type: 'string',
+                                        example: "Bùi Ngọc Linh"
+                                    },
+                                    Birthday: {
+                                        type: 'string',
+                                        example: "2001-11-06"
+                                    },
+                                    Gender: {
+                                        type: 'string',
+                                        example: "Nam"
+                                    }
+                                },
+                                required: ['file', 'username', 'password', 'email', 'PhoneNumber', 'FullName', 'Birthday', 'Gender']
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    201: {
+                        description: 'Thành công.',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        message: {
+                                            type: 'string',
+                                            example: 'Đăng ký thành công.'
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    500: {
+                        description: 'Thất bại.',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        message: {
+                                            type: 'string',
+                                            example: ''
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
         '/auth/login': {
             post: {
                 tags: ['Tài khoản'],

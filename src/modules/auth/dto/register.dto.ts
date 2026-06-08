@@ -21,7 +21,7 @@ export class RegisterDto {
     FullName!: string;
 
     @IsNotEmpty()
-    @Matches(/^(197[0-9]|[2-9][0-9]{3})\-(0[1-9]|1[0-2])\-(0[1-9]|[12][0-9]|3[01])$/, { message: 'Ngày sinh phải có định dạng dd-MM-yyyy.' })
+    @Matches(/^(197[0-9]|[2-9][0-9]{3})\-(0[1-9]|1[0-2])\-(0[1-9]|[12][0-9]|3[01])$/, { message: 'Ngày sinh phải có định dạng yyyy-MM-dd.' })
     Birthday!: string;
 
     @IsNotEmpty()
