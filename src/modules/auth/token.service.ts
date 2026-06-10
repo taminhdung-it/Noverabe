@@ -84,7 +84,43 @@ export class TokenService {
         };
     }
 
-    async verifyToken() {
-        return 'verify token';
+    async verifyToken(token: string, type: 'access' | 'refresh') {
+        const config = this.configService.get<string>(`jwt.${type}`);
+        if (!config) {
+            throw new NotFoundException('Không tìm thấy config token.');
+        }
+        // Kiểm tra token có hợp lệ không
+        const decoded = this.jwtService.verify(token, {
+            secret: config,
+        });
+        return decoded;
+    }
+
+    async refreshToken(payload: any) {
+        const AccessToken = this.jwtService.sign(
+            {
+                account_id: payload.account_id,
+                roleid: payload.roleid,
+                token_version: payload.token_version,
+                user_id: payload.user_id,
+            },
+            {
+                secret: this.configService.get<string>("jwt.access")!,
+                expiresIn: '15m'
+            }
+        );
+        const RefreshToken = this.jwtService.sign(
+            {
+                account_id: payload.account_id,
+                roleid: payload.roleid,
+                token_version: payload.token_version,
+                user_id: payload.user_id,
+            },
+            {
+                secret: this.configService.get<string>("jwt.refresh")!,
+                expiresIn: '7d'
+            }
+        );
+        return { access_token: AccessToken, refresh_token: RefreshToken };
     }
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, HttpCode, NotFoundException, Post, Res, UnauthorizedException, UploadedFile } from '@nestjs/common';
+import { BadRequestException, Body, Controller, HttpCode, NotFoundException, Post, Res, Req, UploadedFile } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { TokenService } from './token.service';
@@ -7,6 +7,10 @@ import { AuthenticationService } from './authentication.service';
 import { RegisterDto } from './dto/register.dto';
 import { UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AccessGuard } from './guard/auth.guard.ts/access.guard';
+import { UseGuards } from '@nestjs/common';
+import { RefreshGuard } from './guard/auth.guard.ts/refresh.guard';
+
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -46,6 +50,17 @@ export class AuthController {
     }
   }
 
+  @UseGuards(AccessGuard)
+  @Post('logout')
+  @HttpCode(200)
+  async logout(@Req() req: express.Request, @Res() res: express.Response) {
+    const payload = (req as any).user;
+    await this.authService.logout(payload);
+    res.clearCookie('access_token')
+    res.clearCookie('refresh_token');
+    res.json({ message: "Đăng xuất thành công" })
+  }
+
   @Post('verify-2fa')
   @HttpCode(200)
   async verifyTwoFactor(@Body() body: { account_id: string, otp: string }) {
@@ -71,15 +86,29 @@ export class AuthController {
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
     });
-    res.cookie('user_id', tokens.user_id, {
+    res.json({
+      full_name: tokens.full_name,
+      avatar_url: tokens.avatar_url,
+    });
+  }
+
+  @UseGuards(RefreshGuard)
+  @Post('/refresh')
+  async refresh(@Req() req: express.Request, @Res() res: express.Response) {
+    const payload = (req as any).user;
+    const data = await this.tokenService.refreshToken(payload)
+    res.cookie('access_token', data.access_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 15 * 60 * 1000, // 15 phút
+    })
+    res.cookie('refresh_token', data.refresh_token, {
       httpOnly: true,
       secure: true,
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
     });
-    res.json({
-      full_name: tokens.full_name,
-      avatar_url: tokens.avatar_url,
-    });
+    res.json({ message: "Đã làm mới token. Vui lòng gọi api chức năng." })
   }
 }

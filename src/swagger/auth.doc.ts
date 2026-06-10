@@ -168,6 +168,47 @@ export const authDoc = {
                 },
             },
         },
+        '/auth/logout': {
+            post: {
+                tags: ['Tài khoản'],
+                summary: 'Đăng xuất',
+                description: '',
+                responses: {
+                    200: {
+                        description: 'Thành công.',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        message: {
+                                            type: 'string',
+                                            example: 'Đăng xuất thành công.'
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    500: {
+                        description: 'Thất bại.',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        message: {
+                                            type: 'string',
+                                            example: ''
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                }
+            }
+        },
         '/auth/verify-2fa': {
             post: {
                 tags: ['Tài khoản'],
@@ -319,6 +360,47 @@ export const authDoc = {
                     },
                 },
             },
+        },
+        '/auth/refresh': {
+            post: {
+                tags: ["Tài khoản"],
+                summary: "Làm mới token",
+                discription: "",
+                responses: {
+                    200: {
+                        description: 'Thành công.',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        message: {
+                                            type: 'string',
+                                            example: 'Đã làm mới token. Vui lòng gọi api chức năng.'
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    500: {
+                        description: 'Thất bại.',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        message: {
+                                            type: 'string',
+                                            example: ''
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                }
+            }
         }
     }
 }
