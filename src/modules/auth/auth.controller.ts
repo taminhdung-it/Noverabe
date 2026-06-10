@@ -86,7 +86,7 @@ export class AuthController {
   }
 
   @UseGuards(RefreshGuard)
-  @Post('/refresh')
+  @Post('refresh')
   async refresh(@Req() req: express.Request, @Res() res: express.Response) {
     const payload = (req as any).user;
     const data = await this.tokenService.refreshToken(payload)

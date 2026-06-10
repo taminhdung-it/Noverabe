@@ -8,7 +8,7 @@ export const authDoc = {
                 requestBody: {
                     required: true,
                     content: {
-                        'multipart/form-data': {
+                        'application/json': {
                             schema: {
                                 type: 'object',
                                 properties: {
@@ -41,7 +41,43 @@ export const authDoc = {
                                         example: "Nam"
                                     }
                                 },
-                                required: ['file', 'username', 'password', 'email', 'PhoneNumber', 'FullName', 'Birthday', 'Gender']
+                                required: ['username', 'password', 'email', 'PhoneNumber', 'FullName', 'Birthday', 'Gender']
+                            }
+                        },
+                        'application/x-www-form-urlencoded': {
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                    username: {
+                                        type: 'string',
+                                        example: "novera"
+                                    },
+                                    password: {
+                                        type: 'string',
+                                        example: "Novera123*"
+                                    },
+                                    email: {
+                                        type: 'string',
+                                        example: "buingoclinh.dev@gmail.com"
+                                    },
+                                    PhoneNumber: {
+                                        type: 'string',
+                                        example: "0794556192"
+                                    },
+                                    FullName: {
+                                        type: 'string',
+                                        example: "Bùi Ngọc Linh"
+                                    },
+                                    Birthday: {
+                                        type: 'string',
+                                        example: "2001-11-06"
+                                    },
+                                    Gender: {
+                                        type: 'string',
+                                        example: "Nam"
+                                    }
+                                },
+                                required: ['username', 'password', 'email', 'PhoneNumber', 'FullName', 'Birthday', 'Gender']
                             }
                         }
                     }
