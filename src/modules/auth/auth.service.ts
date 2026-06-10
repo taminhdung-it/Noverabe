@@ -1,7 +1,7 @@
 import { Account } from './../../entites/account.entity';
-import { Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, NotFoundException, Query, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
@@ -33,22 +33,40 @@ export class AuthService {
     ) { }
 
     async register(registerDto: RegisterDto) {
-        // Tạo thông tin người dùng mới
-        const userResult = await this.userRepo.save({
-            full_name: registerDto.FullName,
-            birth_date: registerDto.Birthday,
-            gender: registerDto.Gender.toLowerCase() === 'nam' ? GenderEnum.MALE : GenderEnum.FEMALE,
-        });
-        // Mã hóa mật khẩu và lưu thông tin tài khoản
-        const passwordHash = await bcrypt.hash(registerDto.password, 10);
-        const accountResult = await this.accountRepo.save({
-            username: registerDto.username,
-            password_hash: passwordHash,
-            email: registerDto.email,
-            phone_number: registerDto.PhoneNumber,
-            role_id: "1",
-            user_id: userResult.id,
-        });
+        const list_error = { "full_name": "họ và tên", "username": "tên người dùng", "email": "email", "phone_number": "số điện thoại" }
+        let userid = ""
+        try {
+            // Tạo thông tin người dùng mới
+            const userResult = await this.userRepo.save({
+                full_name: registerDto.FullName,
+                birth_date: registerDto.Birthday,
+                gender: registerDto.Gender.toLowerCase() === 'nam' ? GenderEnum.MALE : GenderEnum.FEMALE,
+            });
+            userid = userResult.id;
+            // Mã hóa mật khẩu và lưu thông tin tài khoản
+            const passwordHash = await bcrypt.hash(registerDto.password, 10);
+            const accountResult = await this.accountRepo.save({
+                username: registerDto.username,
+                password_hash: passwordHash,
+                email: registerDto.email,
+                phone_number: registerDto.PhoneNumber,
+                role_id: "1",
+                user_id: userResult.id,
+            });
+        } catch (error) {
+            if (error instanceof QueryFailedError && (error as any).driverError?.code === '23505') {
+                let name_error = ""
+                for (let i in list_error) {
+                    if (i === (error as any).driverError.detail.split("(")[1].split(")")[0]) {
+                        name_error = list_error[i]
+                    }
+                }
+                if ((error as any).driverError.detail.split("(")[1].split(")")[0] !== "full_name") {
+                    await this.userRepo.delete({ id: userid })
+                }
+                throw new ConflictException(`Dữ liệu ${name_error} bị trùng`)
+            }
+        }
     }
 
     async login(loginDto: LoginDto) {
