@@ -10,7 +10,7 @@ async function bootstrap() {
       "http://localhost:3000",
       "https://novera.dpdns.org",
       "https://api.novera.dpdns.org",
-      "https://localhost:9999"
+      "http://localhost:9999"
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,

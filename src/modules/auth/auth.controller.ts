@@ -65,17 +65,21 @@ export class AuthController {
 
   @Post('set-tokens')
   @HttpCode(201)
-  async setTokens(@Body() body: { account_id: string }, @Res() res: express.Response) {
+  async setTokens(@Body() body: { account_id: string }, @Res() res: express.Response, @Req() req: express.Request) {
     const tokens = await this.tokenService.generateToken(body.account_id);
+    const proto = req.headers['x-forwarded-proto']
+    const isSecure =
+      req.secure ||
+      (Array.isArray(proto) ? proto.includes('https') : proto === 'https')
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
-      secure: true,
+      secure: isSecure,
       sameSite: 'lax',
       maxAge: 15 * 60 * 1000, // 15 phút
     })
     res.cookie('refresh_token', tokens.refresh_token, {
       httpOnly: true,
-      secure: true,
+      secure: isSecure,
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
     });
@@ -88,17 +92,21 @@ export class AuthController {
   @UseGuards(RefreshGuard)
   @Post('refresh')
   async refresh(@Req() req: express.Request, @Res() res: express.Response) {
+    const proto = req.headers['x-forwarded-proto']
+    const isSecure =
+      req.secure ||
+      (Array.isArray(proto) ? proto.includes('https') : proto === 'https')
     const payload = (req as any).user;
     const data = await this.tokenService.refreshToken(payload)
     res.cookie('access_token', data.access_token, {
       httpOnly: true,
-      secure: true,
+      secure: isSecure,
       sameSite: 'lax',
       maxAge: 15 * 60 * 1000, // 15 phút
     })
     res.cookie('refresh_token', data.refresh_token, {
       httpOnly: true,
-      secure: true,
+      secure: isSecure,
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
     });
