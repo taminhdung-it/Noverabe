@@ -18,17 +18,10 @@ export class AuthController {
     private readonly tokenService: TokenService,
     private readonly authenticationService: AuthenticationService
   ) { }
-  @UseInterceptors(FileInterceptor('file'))
   @Post('register')
   @HttpCode(201)
-  async register(@Body() registerDto: RegisterDto, @UploadedFile() file: Express.Multer.File, @Res() res: express.Response) {
-    if (file === undefined || file === null) {
-      throw new NotFoundException('Không tìm thấy tệp.');
-    }
-    if (!file.mimetype.startsWith('image/')) {
-      throw new BadRequestException('Tệp tải lên phải là ảnh.');
-    }
-    await this.authService.register(registerDto, file);
+  async register(@Body() registerDto: RegisterDto, @Res() res: express.Response) {
+    await this.authService.register(registerDto);
     res.json({ message: 'Đăng ký thành công.' });
   }
 

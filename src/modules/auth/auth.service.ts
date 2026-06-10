@@ -32,7 +32,7 @@ export class AuthService {
         private readonly uploadService: UploadService
     ) { }
 
-    async register(registerDto: RegisterDto, file: Express.Multer.File) {
+    async register(registerDto: RegisterDto) {
         // Tạo thông tin người dùng mới
         const userResult = await this.userRepo.save({
             full_name: registerDto.FullName,
@@ -49,9 +49,6 @@ export class AuthService {
             role_id: "1",
             user_id: userResult.id,
         });
-        // Tải ảnh đại diện lên Cloudinary và cập nhật URL vào thông tin người dùng
-        const uploadResult = await this.uploadService.uploadFile(file, registerDto.FullName, accountResult.uid, userResult.id);
-        await this.userRepo.update({ id: userResult.id }, { avatar_url: uploadResult });
     }
 
     async login(loginDto: LoginDto) {
