@@ -8,6 +8,7 @@ export * from './comic-chapter.entity';
 export * from './comment.entity';
 export * from './follow.entity';
 export * from './like.entity';
+export * from './messager.entity';
 export * from './novel-chapter-content.entity';
 export * from './novel-chapter.entity';
 export * from './order.entity';

@@ -14,6 +14,7 @@ import { ActivityLog } from './activity-log.entity';
 import { Comment } from './comment.entity';
 import { Follow } from './follow.entity';
 import { Like } from './like.entity';
+import { Messager } from './messager.entity';
 import { Order } from './order.entity';
 import { OwnedChapter } from './owned-chapter.entity';
 import { Role } from './role.entity';
@@ -114,4 +115,10 @@ export class Account {
 
   @OneToMany(() => Transaction, (transaction) => transaction.account)
   transactions!: Transaction[];
+
+  @OneToMany(() => Messager, (messager) => messager.sender)
+  sent_messages!: Messager[];
+
+  @OneToMany(() => Messager, (messager) => messager.receiver)
+  received_messages!: Messager[];
 }

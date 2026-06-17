@@ -69,6 +69,43 @@ export class AuthService {
         }
     }
 
+    async registeradmin(registerDto: RegisterDto) {
+        const list_error = { "full_name": "họ và tên", "username": "tên người dùng", "email": "email", "phone_number": "số điện thoại" }
+        let userid = ""
+        try {
+            // Tạo thông tin người dùng mới
+            const userResult = await this.userRepo.save({
+                full_name: registerDto.FullName,
+                birth_date: registerDto.Birthday,
+                gender: registerDto.Gender.toLowerCase() === 'nam' ? GenderEnum.MALE : GenderEnum.FEMALE,
+            });
+            userid = userResult.id;
+            // Mã hóa mật khẩu và lưu thông tin tài khoản
+            const passwordHash = await bcrypt.hash(registerDto.password, 10);
+            const accountResult = await this.accountRepo.save({
+                username: registerDto.username,
+                password_hash: passwordHash,
+                email: registerDto.email,
+                phone_number: registerDto.PhoneNumber,
+                role_id: "2",
+                user_id: userResult.id,
+            });
+        } catch (error) {
+            if (error instanceof QueryFailedError && (error as any).driverError?.code === '23505') {
+                let name_error = ""
+                for (let i in list_error) {
+                    if (i === (error as any).driverError.detail.split("(")[1].split(")")[0]) {
+                        name_error = list_error[i]
+                    }
+                }
+                if ((error as any).driverError.detail.split("(")[1].split(")")[0] !== "full_name") {
+                    await this.userRepo.delete({ id: userid })
+                }
+                throw new ConflictException(`Dữ liệu ${name_error} bị trùng`)
+            }
+        }
+    }
+
     async login(loginDto: LoginDto) {
         // Kiểm tra tên tài khoản và mật khẩu
         const AccountResult = await this.accountRepo.findOneBy({ username: loginDto.username });
