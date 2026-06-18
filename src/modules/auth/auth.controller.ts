@@ -74,13 +74,13 @@ export class AuthController {
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
       secure: isSecure,
-      sameSite: isSecure ? "lax" : "none",
+      sameSite: isSecure ? "none" : "lax",
       maxAge: 15 * 60 * 1000, // 15 phút
     })
     res.cookie('refresh_token', tokens.refresh_token, {
       httpOnly: true,
       secure: isSecure,
-      sameSite: isSecure ? "lax" : "none",
+      sameSite: isSecure ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
     });
     res.json({
