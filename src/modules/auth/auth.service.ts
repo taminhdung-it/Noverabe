@@ -116,6 +116,10 @@ export class AuthService {
         if (isPasswordValid === false) {
             throw new UnauthorizedException('Mật khẩu không đúng. Vui lòng thử lại.');
         }
+        const RoleResult = await this.roleRepo.findOneBy({ id: AccountResult.role_id });
+        if (RoleResult?.name !== "user") {
+            throw new UnauthorizedException('Tài khoản của bạn không hợp lệ.')
+        }
         // Kiểm tra trạng thái tài khoản
         if (AccountResult.status === AccountStatusEnum.ONLINE.toString()) {
             throw new UnauthorizedException('Tài khoản đang hoạt động.');
