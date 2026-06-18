@@ -131,8 +131,8 @@ export class AuthService {
     }
 
     async logout(payload: any) {
-        const token_version_new = payload.user.token_version + 1;
-        const accountid = payload.user.account_id
+        const token_version_new = Number(payload.token_version) + 1;
+        const accountid = payload.account_id
         await this.accountRepo.update({ uid: accountid }, { status: AccountStatusEnum.OFFLINE, token_version: token_version_new.toString() });
     }
 }
