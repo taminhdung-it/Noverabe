@@ -32,6 +32,7 @@ export class AuthService {
         private readonly uploadService: UploadService
     ) { }
 
+    //USER WEB
     async register(registerDto: RegisterDto) {
         const list_error = { "full_name": "họ và tên", "username": "tên người dùng", "email": "email", "phone_number": "số điện thoại" }
         let userid = ""
@@ -69,6 +70,34 @@ export class AuthService {
         }
     }
 
+    async login(loginDto: LoginDto) {
+        // Kiểm tra tên tài khoản và mật khẩu
+        const AccountResult = await this.accountRepo.findOneBy({ username: loginDto.username });
+        if (AccountResult === null) {
+            throw new NotFoundException('Tên người dùng không tồn tại. Vui lòng kiểm tra lại.');
+        }
+        const isPasswordValid = await bcrypt.compare(loginDto.password, AccountResult.password_hash);
+        if (isPasswordValid === false) {
+            throw new UnauthorizedException('Mật khẩu không đúng. Vui lòng thử lại.');
+        }
+        // Kiểm tra tài khoản user
+        const RoleResult = await this.roleRepo.findOneBy({ id: AccountResult.role_id });
+        if (RoleResult?.name !== "user") {
+            throw new UnauthorizedException('Tài khoản của bạn không được hỗ trợ đăng nhập tại đây.')
+        }
+        // Kiểm tra trạng thái tài khoản
+        if (AccountResult.status === AccountStatusEnum.LOCKED.toString()) {
+            throw new UnauthorizedException('Tài khoản đã bị khóa.');
+        }
+        // Nếu tài khoản có bật 2FA, lưu trạng thái xác thực 2FA vào cache
+        if (AccountResult.two_factor_enabled === true) {
+            await this.cacheManager.set(`${AccountResult.uid}_auth`, false, { ttl: 900 });
+        }
+        await this.cacheManager.set(AccountResult.uid, AccountResult.uid, { ttl: 900 });
+        return { account_id: AccountResult.uid, verify_2fa: AccountResult.two_factor_enabled, active: AccountResult.status };
+    }
+
+    //ADMIN WEB
     async registeradmin(registerDto: RegisterDto) {
         const list_error = { "full_name": "họ và tên", "username": "tên người dùng", "email": "email", "phone_number": "số điện thoại" }
         let userid = ""
@@ -106,34 +135,7 @@ export class AuthService {
         }
     }
 
-    async login(loginDto: LoginDto) {
-        // Kiểm tra tên tài khoản và mật khẩu
-        const AccountResult = await this.accountRepo.findOneBy({ username: loginDto.username });
-        if (AccountResult === null) {
-            throw new NotFoundException('Tên người dùng không tồn tại. Vui lòng kiểm tra lại.');
-        }
-        const isPasswordValid = await bcrypt.compare(loginDto.password, AccountResult.password_hash);
-        if (isPasswordValid === false) {
-            throw new UnauthorizedException('Mật khẩu không đúng. Vui lòng thử lại.');
-        }
-        const RoleResult = await this.roleRepo.findOneBy({ id: AccountResult.role_id });
-        if (RoleResult?.name !== "user") {
-            throw new UnauthorizedException('Tài khoản của bạn không hợp lệ.')
-        }
-        // Kiểm tra trạng thái tài khoản
-        if (AccountResult.status === AccountStatusEnum.ONLINE.toString()) {
-            throw new UnauthorizedException('Tài khoản đang hoạt động.');
-        } else if (AccountResult.status === AccountStatusEnum.LOCKED.toString()) {
-            throw new UnauthorizedException('Tài khoản đã bị khóa.');
-        }
-        // Nếu tài khoản có bật 2FA, lưu trạng thái xác thực 2FA vào cache
-        if (AccountResult.two_factor_enabled === true) {
-            await this.cacheManager.set(`${AccountResult.uid}_auth`, false, { ttl: 900 });
-        }
-        await this.cacheManager.set(AccountResult.uid, AccountResult.uid, { ttl: 900 });
-        return { account_id: AccountResult.uid, verify_2fa: AccountResult.two_factor_enabled };
-    }
-
+    //COMMON WEB
     async logout(payload: any) {
         const token_version_new = Number(payload.token_version) + 1;
         const accountid = payload.account_id

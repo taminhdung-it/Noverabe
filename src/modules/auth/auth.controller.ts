@@ -34,11 +34,13 @@ export class AuthController {
         message: 'Đăng nhập thành công. Vui lòng xác thực danh tính.',
         account_id: data.account_id,
         verify_2fa: data.verify_2fa,
+        active: data.active
       };
     } else {
       return {
         message: 'Đăng nhập thành công.',
         account_id: data.account_id,
+        active: data.active
       }
     }
   }
